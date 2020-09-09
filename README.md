@@ -19,6 +19,7 @@ Better: https://premium.wpmudev.org/blog/setting-up-xampp/
 
 
 ##########################################################
+
 2. XAMPP uses MariaDB instead of MySQL, recomment changing this to MySQL otherwise may be difficulty in implmenting changes
 
 https://stackoverflow.com/questions/39654428/how-can-i-change-mariadb-to-mysql-in-xampp
