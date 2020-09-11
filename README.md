@@ -8,17 +8,15 @@
 
 ### Python Libs
 
-- MySQLdb
+- MySQLdb (Not Default)
+- pytz (Not Default)
 - urllib
 - json
 - ast
 - datetime
-- pytz
 - glob
 - sys
 - os
-
-I think these are all standard and may not require specific downloading.
 
 ### MySQL Server to test on (see below for XAMPP guidance)
 
