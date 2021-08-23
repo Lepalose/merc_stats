@@ -1,5 +1,8 @@
-import MySQLdb
+# import MySQLdb
 import datetime
+import pymysql
+from sqlalchemy import create_engine
+import pandas as pd
 
 ###########################################
 #   
@@ -15,6 +18,15 @@ import datetime
 #ps2_char_outfit
 #ps2_outfit
 #ps2_faction
+
+#table names:
+ps2_char = 'ps2_char'
+ps2_char_outfit = 'ps2_char_outfit'
+ps2_outfit = 'ps2_outfit'
+ps2_faction = 'ps2_faction'
+ps2_gainxp_events = 'ps2_gainxp_events'
+ps2_loginout_events = 'ps2_loginout_events'
+ps2_death_events = 'ps2_death_events'
 
 
 #UPDATE GAIN XP EVENTS TABLE
@@ -529,25 +541,44 @@ def t_avgmax_up(opdate, srch_outfit, db):
 
 # MAIN FUNCTION
 
-def ps2_ops_update (conn_info, opdate, xpevents, deathevents, loginoutevents, charlist, outfitlist):
-	
+def ps2_ops_update (conn_info, opdate, gain_xp_events, death_events, loginout_events, char_dataframe, char_outfit_dataframe, outfit_dataframe):
+
+	pymysql.install_as_MySQLdb()
+
+	#url needs to be encoded for special characters
+
+	engine = create_engine('mysql+pymysql://%s:%s@%s:%s/%s' % (conn_info['user'], conn_info['passwd'], conn_info['host'],  conn_info['port'], conn_info['db']))
+
+	engine.connect()
+
 	# CONNECTION TO DB
-	db=MySQLdb.connect(host=conn_info["host"], port=conn_info["port"], user=conn_info["user"], passwd=conn_info["passwd"], db=conn_info["db"])
+	# db=pymysql.connect(host=conn_info["host"], port=conn_info["port"], user=conn_info["user"], passwd=conn_info["passwd"], db=conn_info["db"])
 	print("##### CONNECTED TO DATABASE #####")
 
 	#UPDATING THE OP TABLES
+
+	gain_xp_events.to_sql(ps2_gainxp_events, engine, if_exists='append', index=False)
+	death_events.to_sql(ps2_death_events, engine, if_exists='append', index=False)
+	loginout_events.to_sql(ps2_loginout_events, engine, if_exists='append', index=False)
+	char_dataframe.to_sql(ps2_char, engine, if_exists='append', index=False)
+	char_outfit_dataframe.to_sql(ps2_char_outfit, engine, if_exists='append', index=False)
+	outfit_dataframe.to_sql(ps2_outfit, engine, if_exists='append', index=False)
+
+	print('completed upload')
 	
-	t_gainxp_up(xpevents, db)
-	t_death_up(deathevents, db)
-	t_loginout_up(loginoutevents, db)
-	t_char_t_charout_up(charlist, opdate, db)
-	t_outfit_up(opdate, outfitlist, db)
+	# t_gainxp_up(xpevents, db)
+	# t_death_up(deathevents, db)
+	# t_loginout_up(loginoutevents, db)
+	# t_char_t_charout_up(charlist, opdate, db)
+	# t_outfit_up(opdate, outfitlist, db)
+
+	db=pymysql.connect(host=conn_info["host"], port=conn_info["port"], user=conn_info["user"], passwd=conn_info["passwd"], db=conn_info["db"])
 	
 	srch_outfit = "37509488620601577"
 	t_avgmax_up(opdate, srch_outfit, db)
 
 	# disconnect from server
-	db.close()
+	engine.dispose()
 	print("##### UPDATING FINISHED, CONNECTION CLOSED #####")
 
 

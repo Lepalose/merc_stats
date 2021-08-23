@@ -7,7 +7,7 @@ import MySQLdb
 
 # CONNECTION TO DB
 #FOR LOCAL TESTING
-db=MySQLdb.connect(host="localhost", user="testadm", passwd="test_all_the_things", db="mercadm_stats")
+db=MySQLdb.connect(host="localhost", user="testadm", passwd="test_all_the_things", db="mercdemo")
 print("CONNECTED TO LOCALHOST")
 
 #Cursor object
